@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Report Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">ReportAI</span>
+      </div>
+      <div class="header-tag">Powered by Gemini</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">Document Intelligence</p>
+    <h1 class="hero-title">Turn any topic into<br/><em>a professional report</em></h1>
+    <p class="hero-sub">Provide a topic or raw notes — get a structured, styled report in seconds.</p>
+  </section>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="layout">
+
+      <!-- LEFT: Input Panel -->
+      <aside class="panel panel--input">
+        <h2 class="panel-title">Report Brief</h2>
+
+        <div class="field">
+          <label class="field-label" for="topic">Topic <span class="required">*</span></label>
+          <input
+            class="field-input"
+            id="topic"
+            type="text"
+            placeholder="e.g. Impact of AI on Healthcare in 2025"
+            maxlength="500"
+          />
+          <span class="field-hint">Be specific for better results</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="notes">Raw Notes / Data <span class="optional">(optional)</span></label>
+          <textarea
+            class="field-textarea"
+            id="notes"
+            rows="5"
+            placeholder="Paste any facts, bullet points, or raw information you want included…"
+            maxlength="3000"
+          ></textarea>
+          <span class="field-hint char-count" id="notes-count">0 / 3000</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Report Style</label>
+          <div class="style-grid" id="style-grid">
+            <button class="style-btn active" data-value="business">
+              <span class="style-icon">📊</span>
+              <span class="style-name">Business</span>
+            </button>
+            <button class="style-btn" data-value="academic">
+              <span class="style-icon">🎓</span>
+              <span class="style-name">Academic</span>
+            </button>
+            <button class="style-btn" data-value="technical">
+              <span class="style-icon">⚙️</span>
+              <span class="style-name">Technical</span>
+            </button>
+            <button class="style-btn" data-value="journalistic">
+              <span class="style-icon">📰</span>
+              <span class="style-name">Journalistic</span>
+            </button>
+            <button class="style-btn" data-value="summary">
+              <span class="style-icon">⚡</span>
+              <span class="style-name">Summary</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Report Length</label>
+          <div class="length-tabs" id="length-tabs">
+            <button class="length-tab" data-value="short">Short<span>~350 words</span></button>
+            <button class="length-tab active" data-value="medium">Medium<span>~800 words</span></button>
+            <button class="length-tab" data-value="long">Long<span>~1500 words</span></button>
+          </div>
+        </div>
+
+        <button class="generate-btn" id="generate-btn">
+          <span class="btn-text">Generate Report</span>
+          <span class="btn-icon">→</span>
+        </button>
+      </aside>
+
+      <!-- RIGHT: Output Panel -->
+      <section class="panel panel--output" id="output-panel">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">📄</div>
+          <p class="empty-title">Your report will appear here</p>
+          <p class="empty-sub">Fill in the brief on the left and click Generate Report</p>
+        </div>
+
+        <!-- Loading state -->
+        <div class="loading-state hidden" id="loading-state">
+          <div class="loader-ring"></div>
+          <p class="loading-text" id="loading-text">Drafting your report…</p>
+        </div>
+
+        <!-- Error state -->
+        <div class="error-state hidden" id="error-state">
+          <div class="error-icon">⚠️</div>
+          <p class="error-title">Generation failed</p>
+          <p class="error-msg" id="error-msg"></p>
+          <button class="retry-btn" id="retry-btn">Try again</button>
+        </div>
+
+        <!-- Report output -->
+        <div class="report-output hidden" id="report-output">
+          <div class="report-header">
+            <div>
+              <p class="report-meta" id="report-meta"></p>
+              <h2 class="report-title" id="report-title"></h2>
+            </div>
+            <div class="report-actions">
+              <button class="action-btn" id="copy-btn" title="Copy to clipboard">
+                <span>⎘</span> Copy
+              </button>
+              <div class="download-group">
+                <button class="action-btn action-btn--pdf" id="pdf-btn" title="Download as PDF">
+                  <span>⬇</span> PDF
+                </button>
+                <button class="action-btn action-btn--txt" id="download-btn" title="Download as plain text">
+                  .txt
+                </button>
+              </div>
+              <button class="action-btn action-btn--new" id="new-btn" title="Start over">
+                ✦ New
+              </button>
+            </div>
+          </div>
+          <div class="report-divider"></div>
+          <div class="report-body" id="report-body"></div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>AI Report Generator &nbsp;·&nbsp; Built with Flask &amp; Gemini API</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
